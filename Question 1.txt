@@ -1,0 +1,27 @@
+ /**Question 1
+ 
+We want to understand more about the movies that families are watching. 
+The following categories are considered family movies:
+Animation, Children, Classics, Comedy, Family and Music.
+Create a query that lists each movie, the film category
+it is classified in, and the number of times it has been rented out.
+**/
+
+select film.title, category.name, count(rental_id)
+from film
+join film_category
+on film.film_id=  film_category.film_id
+
+join category
+on film_category.category_id= category.category_id
+
+join inventory
+on film.film_id= inventory.film_id
+
+join rental
+on inventory.inventory_id= rental.inventory_id
+
+group by film.title,  category.name
+having  category.name in ('Animation', 'Children', 'Classics', 'Comedy', 'Family' , 'Music')
+
+order by 2

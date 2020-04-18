@@ -1,0 +1,29 @@
+/**
+Question 4
+We would like to know who were our top 10 paying customers, how many payments
+they made on a monthly basis during 2007, and what was the amount of the monthly payments. 
+Can you write a query to capture the customer name, month and year of payment, 
+and total payment amount for each month by these top 10 paying customers?
+**/
+
+with t1 as 
+	(select first_name|| ' '|| last_name as full_name, sum(amount) total_amount
+	from customer c
+	join payment p
+	on c.customer_id = p.customer_id
+	group by 1
+	order by 2 desc
+	limit 10),
+	
+	t2 as
+	(select first_name|| ' '|| last_name as full_name, date_trunc('month',payment_date) pay_month, count(amount) pay_count_per_month , sum(amount) total
+	from customer c
+	join payment p
+	on c.customer_id = p.customer_id
+	where date_part('year',payment_date)=2007
+	group by 1,2)
+
+select t2.pay_month, t1.full_name,t2.pay_count_per_month, t2.total
+from t2
+join t1
+on t2.full_name = t1.full_name
